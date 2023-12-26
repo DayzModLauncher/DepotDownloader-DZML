@@ -103,8 +103,10 @@ namespace DepotDownloader
 
             #endregion
 
+            var loginOnly = HasParameter(args, "-login");
+
             var appId = GetParameter(args, "-app", ContentDownloader.INVALID_APP_ID);
-            if (appId == ContentDownloader.INVALID_APP_ID)
+            if (appId == ContentDownloader.INVALID_APP_ID && !loginOnly)
             {
                 Console.WriteLine("Error: -app not specified!");
                 return 1;
@@ -112,7 +114,21 @@ namespace DepotDownloader
 
             var pubFile = GetParameter(args, "-pubfile", ContentDownloader.INVALID_MANIFEST_ID);
             var ugcId = GetParameter(args, "-ugc", ContentDownloader.INVALID_MANIFEST_ID);
-            if (pubFile != ContentDownloader.INVALID_MANIFEST_ID)
+            if (loginOnly)
+            {
+                #region Login Only
+                if (InitializeSteam(username, password))
+                {
+                    ContentDownloader.ShutdownSteam3();
+                }
+                else
+                {
+                    Console.WriteLine("Error: InitializeSteam failed");
+                    return 1;
+                }
+                #endregion
+            }
+            else if (pubFile != ContentDownloader.INVALID_MANIFEST_ID)
             {
                 #region Pubfile Downloading
 
@@ -390,6 +406,7 @@ namespace DepotDownloader
             Console.WriteLine();
             Console.WriteLine("\t-username <user>\t\t- the username of the account to login to for restricted content.");
             Console.WriteLine("\t-password <pass>\t\t- the password of the account to login to for restricted content.");
+            Console.WriteLine("\t-login\t\t- if set, depotdownloader won't try to download anything and instead just allow the user to login");
             Console.WriteLine("\t-remember-password\t\t- if set, remember the password for subsequent logins of this user. (Use -username <username> -remember-password as login credentials)");
             Console.WriteLine();
             Console.WriteLine("\t-dir <installdir>\t\t- the directory in which to place downloaded files.");
