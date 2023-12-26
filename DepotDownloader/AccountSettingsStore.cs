@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
@@ -37,18 +37,18 @@ namespace DepotDownloader
         }
 
         public static AccountSettingsStore Instance;
-        static readonly IsolatedStorageFile IsolatedStorage = IsolatedStorageFile.GetUserStoreForAssembly();
+        //static readonly IsolatedStorageFile IsolatedStorage = IsolatedStorageFile.GetUserStoreForAssembly();
 
         public static void LoadFromFile(string filename)
         {
             if (Loaded)
                 throw new Exception("Config already loaded");
 
-            if (IsolatedStorage.FileExists(filename))
+            if (File.Exists(filename))
             {
                 try
                 {
-                    using (var fs = IsolatedStorage.OpenFile(filename, FileMode.Open, FileAccess.Read))
+                    using (var fs = File.OpenRead(filename))
                     using (var ds = new DeflateStream(fs, CompressionMode.Decompress))
                     {
                         Instance = Serializer.Deserialize<AccountSettingsStore>(ds);
@@ -75,7 +75,7 @@ namespace DepotDownloader
 
             try
             {
-                using (var fs = IsolatedStorage.OpenFile(Instance.FileName, FileMode.Create, FileAccess.Write))
+                using (var fs = File.OpenWrite(Instance.FileName))
                 using (var ds = new DeflateStream(fs, CompressionMode.Compress))
                 {
                     Serializer.Serialize(ds, Instance);

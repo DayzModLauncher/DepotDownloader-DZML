@@ -1348,7 +1348,7 @@ namespace DepotDownloader
 
             BytesPerSec = downloaded / elapsed;
 
-            Console.WriteLine("[Info]|[Progress]|{0:#00.00}%|{1}|{2}|{3}/s", (sizeDownloaded / (float)depotDownloadCounter.CompleteDownloadSize) * 100.0f, SizeSuffix(sizeDownloaded), SizeSuffix(depotDownloadCounter.CompleteDownloadSize), SizeSuffix((UInt64)BytesPerSec));
+            Console.WriteLine("[Info]|[Progress]|{0:#00.00}%|{1}|{2}|{3}/s", (sizeDownloaded / (float)depotDownloadCounter.CompleteDownloadSize) * 100.0f, sizeDownloaded, depotDownloadCounter.CompleteDownloadSize, BytesPerSec);
 
             if (sizeDownloaded == depotDownloadCounter.CompleteDownloadSize)
             {
